@@ -1,0 +1,90 @@
+{
+  "name": "@aulasoftwarelibre/nestjs-eventstore",
+  "description": "NestJS module for eventsourcing development with eventstore database",
+  "version": "0.1.0",
+  "license": "EUPL-1.2",
+  "main": "dist/index.js",
+  "files": [
+    "dist/**/**",
+    "*.md"
+  ],
+  "scripts": {
+    "test": "jest",
+    "build": "tsc -p tsconfig.json",
+    "format": "prettier --write \"**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" --fix",
+    "prepublish:next": "npm run build",
+    "publish:next": "npm publish --access public --tag next",
+    "prepublish:npm": "npm run build",
+    "publish:npm": "npm publish --access public",
+    "prerelease": "npm run build",
+    "release": "release-it"
+  },
+  "keywords": [
+    "nestjs",
+    "eventstore",
+    "eventsourcing"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aulasoftwarelibre/nestjs-eventstore"
+  },
+  "bugs": "https://github.com/aulasoftwarelibre/nestjs-eventstore/issues",
+  "dependencies": {
+    "@eventstore/db-client": "^1.2.2",
+    "clone": "^2.1.2",
+    "shallow-equal-object": "^1.1.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "@nestjs/common": "^7.6.18",
+    "@nestjs/core": "^7.6.18",
+    "@nestjs/cqrs": "^7.0.1",
+    "@nestjs/testing": "^7.6.18",
+    "@types/clone": "^2.1.0",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^16.0.0",
+    "@types/uuid": "^8.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "commander": "^7.2.0",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^7.0.0",
+    "jest": "^27.0.6",
+    "lint-staged": "^11.0.0",
+    "nestjs-console": "^5.0.0",
+    "prettier": "^2.3.2",
+    "reflect-metadata": "0.1.13",
+    "release-it": "^14.10.0",
+    "rxjs": "^6.4.0",
+    "ts-jest": "^27.0.3",
+    "ts-loader": "^9.2.3",
+    "ts-node": "^10.0.0",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.3.5"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0",
+    "@nestjs/cqrs": "^7.0.0",
+    "commander": "^7.2.0",
+    "nestjs-console": "^5.0.0",
+    "reflect-metadata": "0.1.13",
+    "rxjs": "^6.4.0"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write"
+    ]
+  }
+}
