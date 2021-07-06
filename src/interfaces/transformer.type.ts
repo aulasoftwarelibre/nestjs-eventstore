@@ -1,4 +1,4 @@
-import { Event } from '..';
+import { Event } from '../domain';
 
 export type Transformer = (event: Event<any>) => Event<any>;
 

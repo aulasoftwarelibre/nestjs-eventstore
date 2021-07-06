@@ -8,7 +8,7 @@ import {
   ResolvedEvent,
   START,
 } from '@eventstore/db-client';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, Type } from '@nestjs/common';
 import { Subject } from 'rxjs';
 import { v4 as uuid } from 'uuid';
 
@@ -62,7 +62,7 @@ export class EventStore implements IEventPublisher, IMessageSource {
   }
 
   async read<T extends AggregateRoot>(
-    aggregate: Function,
+    aggregate: Type<unknown>,
     id: string,
   ): Promise<T> | null {
     const streamName = `${this.category}-${id}`;

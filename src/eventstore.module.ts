@@ -1,5 +1,5 @@
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { CqrsModule, EventPublisher } from '@nestjs/cqrs';
+import { DynamicModule, Module, Provider, Type } from '@nestjs/common';
+import { AggregateRoot, CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { ExplorerService } from '@nestjs/cqrs/dist/services/explorer.service';
 import { ConsoleModule } from 'nestjs-console';
 
@@ -36,7 +36,7 @@ export class EventStoreModule {
   }
 
   public static forFeature(
-    aggregateRoots: Function[],
+    aggregateRoots: Array<Type<AggregateRoot>>,
     transformer: TransformerRepo,
   ): DynamicModule {
     const aggregateRepoProviders =
@@ -56,7 +56,7 @@ export class EventStoreModule {
   }
 
   private static createAggregateRepositoryProviders(
-    aggregateRoots: Function[],
+    aggregateRoots: Array<Type<unknown>>,
   ): Provider[] {
     return aggregateRoots.map((aggregateRoot) => ({
       provide: getRepositoryToken(aggregateRoot),
