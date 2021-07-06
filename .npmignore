@@ -1,0 +1,11 @@
+# source
+src
+index.ts
+package-lock.json
+tsconfig.json
+tsconfig.build.json
+
+.eslintignore
+.eslintrc.js
+.prettierrc
+.release-it.json
