@@ -1,9 +1,16 @@
-import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
+import {
+  DynamicModule,
+  Global,
+  Module,
+  OnModuleInit,
+  Provider,
+} from '@nestjs/common';
+import { CqrsModule, EventBus } from '@nestjs/cqrs';
 
 import { EventStore } from './eventstore';
 import { Config } from './eventstore.config';
 import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
+import { IEventPublisher } from './interfaces';
 import {
   ConfigService,
   EventStoreModuleAsyncOptions,
@@ -16,7 +23,12 @@ import { TransformerService } from './transformer.service';
   providers: [EventStore, TransformerService],
   exports: [EventStore],
 })
-export class EventStoreCoreModule {
+export class EventStoreCoreModule implements OnModuleInit {
+  constructor(
+    private readonly event$: EventBus,
+    private readonly eventStore: EventStore,
+  ) {}
+
   public static forRoot(config: Config): DynamicModule {
     return {
       module: EventStoreCoreModule,
@@ -52,5 +64,10 @@ export class EventStoreCoreModule {
         ? { inject: [options.useClass], scope: options.scope }
         : { inject: [options.useExisting] }),
     };
+  }
+
+  onModuleInit() {
+    this.eventStore.bridgeEventsTo((this.event$ as any).subject$);
+    this.event$.publisher = <IEventPublisher>this.eventStore;
   }
 }

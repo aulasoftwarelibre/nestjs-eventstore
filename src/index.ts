@@ -1,3 +1,4 @@
+export * from './aggregate.repository';
 export * from './decorators/inject-repository.decorator';
 export * from './domain';
 export * from './eventstore';
