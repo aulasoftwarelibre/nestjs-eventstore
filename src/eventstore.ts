@@ -62,13 +62,13 @@ export class EventStore implements IEventPublisher, IMessageSource {
   }
 
   async read<T extends AggregateRoot>(
-    aggregate: Type<unknown>,
+    aggregate: Type<T>,
     id: string,
   ): Promise<T> | null {
     const streamName = `${this.category}-${id}`;
 
     try {
-      const entity = Reflect.construct(aggregate, []);
+      const entity = <T>Reflect.construct(aggregate, []);
       const resolvedEvents = await this.client.readStream(streamName, {
         direction: FORWARDS,
         fromRevision: START,

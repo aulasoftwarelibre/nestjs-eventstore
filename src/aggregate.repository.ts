@@ -12,7 +12,7 @@ export class AggregateRepository<T extends AggregateRoot, U extends Id> {
   ) {}
 
   public async find(id: U): Promise<T> | null {
-    return this.eventStore.read(this.Aggregate, id.value);
+    return this.eventStore.read<T>(this.Aggregate, id.value);
   }
 
   public save(entity: T): void {
