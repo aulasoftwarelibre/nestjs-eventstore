@@ -1,4 +1,4 @@
-import { version } from 'uuid';
+import { validate, version } from 'uuid';
 
 import { InvalidIdError } from '../exceptions';
 import { ValueObject } from './value-object';
@@ -9,7 +9,7 @@ interface Props {
 
 export abstract class Id extends ValueObject<Props> {
   protected constructor(id: string) {
-    if (version(id) !== 4) {
+    if (!validate(id) || version(id) !== 4) {
       throw InvalidIdError.withString(id);
     }
 
