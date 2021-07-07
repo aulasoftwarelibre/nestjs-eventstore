@@ -14,10 +14,10 @@ import { IEventPublisher, IMessageSource } from '@nestjs/cqrs';
 import { Subject } from 'rxjs';
 import { v4 as uuid } from 'uuid';
 
-import { AggregateRoot, Event, Metadata } from './domain';
+import { AggregateRoot, Event } from './domain';
 import { Config } from './eventstore.config';
 import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
-import { TransformerService } from './transformer.service';
+import { EventStoreMapper } from './eventstore.mapper';
 
 @Injectable()
 export class EventStore
@@ -28,9 +28,8 @@ export class EventStore
   private readonly logger = new Logger(EventStore.name);
 
   constructor(
-    @Inject(EVENT_STORE_SETTINGS_TOKEN)
-    private readonly config: Config,
-    private readonly transformers: TransformerService,
+    @Inject(EVENT_STORE_SETTINGS_TOKEN) private readonly config: Config,
+    private readonly mapper: EventStoreMapper,
   ) {
     this.category = config.category;
     this.client = EventStoreDBClient.connectionString(config.connection);
@@ -43,8 +42,8 @@ export class EventStore
     });
 
     return resolvedEvents
-      .filter((resolvedEvent) => !resolvedEvent.event.type.startsWith('$'))
-      .map<Event>((event) => this.convertEvent(event));
+      .map<Event>((event) => this.mapper.resolvedEventToDomainEvent(event))
+      .filter((event) => event !== undefined);
   }
 
   async publish<T extends Event>(event: T) {
@@ -78,7 +77,7 @@ export class EventStore
       });
 
       const events = resolvedEvents.map<Event>((event) =>
-        this.convertEvent(event),
+        this.mapper.resolvedEventToDomainEvent(event),
       );
 
       entity.loadFromHistory(events);
@@ -99,7 +98,7 @@ export class EventStore
     const streamName = `$ce-${this.category}`;
 
     const onEvent = async (resolvedEvent: ResolvedEvent) => {
-      subject.next(<T>this.convertEvent(resolvedEvent));
+      subject.next(<T>this.mapper.resolvedEventToDomainEvent(resolvedEvent));
     };
 
     try {
@@ -112,21 +111,5 @@ export class EventStore
     } catch (err) {
       this.logger.debug(err);
     }
-  }
-
-  public convertEvent(resolvedEvent: ResolvedEvent): Event | undefined {
-    if (
-      resolvedEvent.event === undefined ||
-      resolvedEvent.event.type.startsWith('$')
-    ) {
-      return undefined;
-    }
-
-    const metadata = resolvedEvent.event.metadata as Metadata;
-    const payload = resolvedEvent.event.data;
-
-    return this.transformers.repo[resolvedEvent.event.type]?.(
-      new Event(metadata._aggregate_id, payload).withMetadata(metadata),
-    );
   }
 }

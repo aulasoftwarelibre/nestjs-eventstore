@@ -6,11 +6,14 @@ import {
   Provider,
 } from '@nestjs/common';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
+import { ExplorerService } from '@nestjs/cqrs/dist/services/explorer.service';
 
 import { Event } from './domain';
 import { EventStore } from './eventstore';
+import { EventStoreCli } from './eventstore.cli';
 import { Config } from './eventstore.config';
 import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
+import { EventStoreMapper } from './eventstore.mapper';
 import {
   ConfigService,
   EventStoreModuleAsyncOptions,
@@ -20,7 +23,13 @@ import { TransformerService } from './transformer.service';
 @Global()
 @Module({
   imports: [CqrsModule],
-  providers: [EventStore, TransformerService],
+  providers: [
+    EventStore,
+    EventStoreMapper,
+    EventStoreCli,
+    ExplorerService,
+    TransformerService,
+  ],
   exports: [EventStore],
 })
 export class EventStoreCoreModule implements OnModuleInit {

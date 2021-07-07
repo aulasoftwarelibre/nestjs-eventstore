@@ -1,12 +1,10 @@
 import { DynamicModule, Module, Provider, Type } from '@nestjs/common';
 import { CqrsModule, EventPublisher } from '@nestjs/cqrs';
-import { ExplorerService } from '@nestjs/cqrs/dist/services/explorer.service';
 import { ConsoleModule } from 'nestjs-console';
 
 import { AggregateRepository } from './aggregate.repository';
 import { AggregateRoot } from './domain';
 import { EventStore } from './eventstore';
-import { EventStoreCli } from './eventstore.cli';
 import { Config } from './eventstore.config';
 import { EventStoreCoreModule } from './eventstore-core.module';
 import { EventStoreModuleAsyncOptions, TransformerRepo } from './interfaces';
@@ -32,7 +30,6 @@ export class EventStoreModule {
         CqrsModule,
         EventStoreCoreModule.forRootAsync(options),
       ],
-      providers: [EventStoreCli, ExplorerService],
     };
   }
 
