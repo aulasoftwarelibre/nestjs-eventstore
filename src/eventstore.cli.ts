@@ -1,11 +1,10 @@
 import { ModuleRef } from '@nestjs/core';
 import { EventHandlerType, IEvent } from '@nestjs/cqrs';
+import { EVENTS_HANDLER_METADATA } from '@nestjs/cqrs/dist/decorators/constants';
 import { ExplorerService } from '@nestjs/cqrs/dist/services/explorer.service';
 import { Command, Console } from 'nestjs-console';
 
 import { EventStore } from './eventstore';
-
-export const EVENTS_HANDLER_METADATA = '__eventsHandler';
 
 @Console()
 export class EventStoreCli {

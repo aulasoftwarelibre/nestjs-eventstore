@@ -7,10 +7,10 @@ import {
 } from '@nestjs/common';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
 
+import { Event } from './domain';
 import { EventStore } from './eventstore';
 import { Config } from './eventstore.config';
 import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
-import { IEventPublisher } from './interfaces';
 import {
   ConfigService,
   EventStoreModuleAsyncOptions,
@@ -25,7 +25,7 @@ import { TransformerService } from './transformer.service';
 })
 export class EventStoreCoreModule implements OnModuleInit {
   constructor(
-    private readonly event$: EventBus,
+    private readonly event$: EventBus<Event>,
     private readonly eventStore: EventStore,
   ) {}
 
@@ -67,7 +67,7 @@ export class EventStoreCoreModule implements OnModuleInit {
   }
 
   onModuleInit() {
-    this.eventStore.bridgeEventsTo((this.event$ as any).subject$);
-    this.event$.publisher = <IEventPublisher>this.eventStore;
+    this.eventStore.bridgeEventsTo(this.event$.subject$);
+    this.event$.publisher = this.eventStore;
   }
 }

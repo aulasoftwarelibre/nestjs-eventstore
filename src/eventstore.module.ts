@@ -1,9 +1,10 @@
 import { DynamicModule, Module, Provider, Type } from '@nestjs/common';
-import { AggregateRoot, CqrsModule, EventPublisher } from '@nestjs/cqrs';
+import { CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { ExplorerService } from '@nestjs/cqrs/dist/services/explorer.service';
 import { ConsoleModule } from 'nestjs-console';
 
 import { AggregateRepository } from './aggregate.repository';
+import { AggregateRoot } from './domain';
 import { EventStore } from './eventstore';
 import { EventStoreCli } from './eventstore.cli';
 import { Config } from './eventstore.config';
@@ -56,12 +57,12 @@ export class EventStoreModule {
   }
 
   private static createAggregateRepositoryProviders(
-    aggregateRoots: Array<Type<unknown>>,
+    aggregateRoots: Array<Type<AggregateRoot>>,
   ): Provider[] {
     return aggregateRoots.map((aggregateRoot) => ({
       provide: getRepositoryToken(aggregateRoot),
       useFactory: (eventStore: EventStore, publisher: EventPublisher) =>
-        new AggregateRepository(aggregateRoot as any, eventStore, publisher),
+        new AggregateRepository(aggregateRoot, eventStore, publisher),
       inject: [EventStore, EventPublisher],
     }));
   }

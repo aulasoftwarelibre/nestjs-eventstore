@@ -4,22 +4,25 @@ import {
   EventStoreDBClient,
   FORWARDS,
   jsonEvent,
+  JSONType,
   NO_STREAM,
   ResolvedEvent,
   START,
 } from '@eventstore/db-client';
 import { Inject, Injectable, Logger, Type } from '@nestjs/common';
+import { IEventPublisher, IMessageSource } from '@nestjs/cqrs';
 import { Subject } from 'rxjs';
 import { v4 as uuid } from 'uuid';
 
-import { AggregateRoot, Event, Metadata, Payload } from './domain';
+import { AggregateRoot, Event, Metadata } from './domain';
 import { Config } from './eventstore.config';
 import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
-import { IEventPublisher, IMessageSource } from './interfaces';
 import { TransformerService } from './transformer.service';
 
 @Injectable()
-export class EventStore implements IEventPublisher, IMessageSource {
+export class EventStore
+  implements IEventPublisher<Event>, IMessageSource<Event>
+{
   private category: string;
   private client: EventStoreDBClient;
   private readonly logger = new Logger(EventStore.name);
@@ -33,7 +36,7 @@ export class EventStore implements IEventPublisher, IMessageSource {
     this.client = EventStoreDBClient.connectionString(config.connection);
   }
 
-  async getEvents(): Promise<Event<any>[]> {
+  async getEvents(): Promise<Event[]> {
     const resolvedEvents = await this.client.readAll({
       direction: FORWARDS,
       fromPosition: START,
@@ -41,10 +44,10 @@ export class EventStore implements IEventPublisher, IMessageSource {
 
     return resolvedEvents
       .filter((resolvedEvent) => !resolvedEvent.event.type.startsWith('$'))
-      .map<Event<any>>((event) => this.convertEvent(event));
+      .map<Event>((event) => this.convertEvent(event));
   }
 
-  async publish<T extends Event<any>>(event: T) {
+  async publish<T extends Event>(event: T) {
     const streamName = `${this.category}-${event.aggregateId}`;
     const expectedRevision =
       event.version <= 0 ? NO_STREAM : BigInt(event.version - 1);
@@ -52,7 +55,7 @@ export class EventStore implements IEventPublisher, IMessageSource {
     const eventData = jsonEvent({
       id: uuid(),
       type: event.eventType,
-      data: event.payload,
+      data: event.payload as JSONType,
       metadata: event.metadata,
     });
 
@@ -74,7 +77,7 @@ export class EventStore implements IEventPublisher, IMessageSource {
         fromRevision: START,
       });
 
-      const events = resolvedEvents.map<Event<any>>((event) =>
+      const events = resolvedEvents.map<Event>((event) =>
         this.convertEvent(event),
       );
 
@@ -82,7 +85,7 @@ export class EventStore implements IEventPublisher, IMessageSource {
 
       return entity;
     } catch (err) {
-      if (err.type === ErrorType.STREAM_NOT_FOUND) {
+      if (err?.type === ErrorType.STREAM_NOT_FOUND) {
         return null;
       }
 
@@ -92,7 +95,7 @@ export class EventStore implements IEventPublisher, IMessageSource {
     return null;
   }
 
-  async bridgeEventsTo<T extends Event<any>>(subject: Subject<T>) {
+  async bridgeEventsTo<T extends Event>(subject: Subject<T>) {
     const streamName = `$ce-${this.category}`;
 
     const onEvent = async (resolvedEvent: ResolvedEvent) => {
@@ -111,7 +114,7 @@ export class EventStore implements IEventPublisher, IMessageSource {
     }
   }
 
-  public convertEvent(resolvedEvent: ResolvedEvent): Event<any> | undefined {
+  public convertEvent(resolvedEvent: ResolvedEvent): Event | undefined {
     if (
       resolvedEvent.event === undefined ||
       resolvedEvent.event.type.startsWith('$')
@@ -120,10 +123,10 @@ export class EventStore implements IEventPublisher, IMessageSource {
     }
 
     const metadata = resolvedEvent.event.metadata as Metadata;
-    const payload = resolvedEvent.event.data as Payload;
+    const payload = resolvedEvent.event.data;
 
     return this.transformers.repo[resolvedEvent.event.type]?.(
-      new Event(payload).withMetadata(metadata),
+      new Event(metadata._aggregate_id, payload).withMetadata(metadata),
     );
   }
 }
