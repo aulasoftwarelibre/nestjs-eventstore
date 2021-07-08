@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -10,10 +9,9 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
-  DomainError,
   IdAlreadyRegisteredError,
   IdNotFoundError,
-} from '../../../../../dist';
+} from '@aulasoftwarelibre/nestjs-eventstore';
 import { catchError } from '../../../utils';
 import { AccountDto, CreateAccountDto, CreateTransactionDto } from '../../dto';
 import { AccountService } from '../account.service';
