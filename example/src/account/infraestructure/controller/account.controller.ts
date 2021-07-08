@@ -14,6 +14,7 @@ import {
   IdAlreadyRegisteredError,
   IdNotFoundError,
 } from '../../../../../dist';
+import { catchError } from '../../../utils';
 import { AccountDto, CreateAccountDto, CreateTransactionDto } from '../../dto';
 import { AccountService } from '../account.service';
 
@@ -37,13 +38,11 @@ export class AccountController {
   ): Promise<AccountDto> {
     try {
       return await this.accountService.createAccount(accountDto);
-    } catch (err) {
-      if (err instanceof IdAlreadyRegisteredError) {
-        throw new ConflictException(err.message);
-      } else if (err instanceof DomainError) {
-        throw new BadRequestException(`Unexpected error: ${err.message}`);
+    } catch (e) {
+      if (e instanceof IdAlreadyRegisteredError) {
+        throw new ConflictException(e.message);
       } else {
-        throw new BadRequestException('Server error');
+        throw catchError(e);
       }
     }
   }
@@ -56,11 +55,9 @@ export class AccountController {
       return await this.accountService.getAccount(id);
     } catch (e) {
       if (e instanceof IdNotFoundError) {
-        throw new NotFoundException('Scope not found');
-      } else if (e instanceof DomainError) {
-        throw new BadRequestException(`Unexpected error: ${e.message}`);
+        throw new NotFoundException('Account not found');
       } else {
-        throw new BadRequestException('Server error');
+        throw catchError(e);
       }
     }
   }
@@ -76,10 +73,8 @@ export class AccountController {
     } catch (e) {
       if (e instanceof IdNotFoundError) {
         throw new NotFoundException('Scope not found');
-      } else if (e instanceof DomainError) {
-        throw new BadRequestException(`Unexpected error: ${e.message}`);
       } else {
-        throw new BadRequestException('Server error');
+        throw catchError(e);
       }
     }
   }
@@ -94,11 +89,9 @@ export class AccountController {
       return await this.accountService.createWithdrawal(id, transactionDto);
     } catch (e) {
       if (e instanceof IdNotFoundError) {
-        throw new NotFoundException('Scope not found');
-      } else if (e instanceof DomainError) {
-        throw new BadRequestException(`Unexpected error: ${e.message}`);
+        throw new NotFoundException('Account not found');
       } else {
-        throw new BadRequestException('Server error');
+        throw catchError(e);
       }
     }
   }
