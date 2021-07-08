@@ -3,6 +3,11 @@
   "description": "NestJS module for eventsourcing development with eventstore database",
   "version": "0.1.3",
   "license": "EUPL-1.2",
+  "author": {
+    "name": "Sergio Gómez",
+    "email": "sergio@uco.es",
+    "url": "https://twitter.com/sgomez"
+  },
   "main": "dist/index.js",
   "files": [
     "dist/**/**",
