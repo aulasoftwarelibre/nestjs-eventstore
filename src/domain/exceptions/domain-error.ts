@@ -3,7 +3,7 @@ export class DomainError extends Error {
     super(stack);
   }
 
-  public static withString(value: string): DomainError {
-    return new DomainError(`${value} is not a valid uuid v4.`);
+  public static because(cause: string): DomainError {
+    return new DomainError(cause);
   }
 }
