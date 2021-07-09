@@ -18,7 +18,7 @@ import {
   ConfigService,
   EventStoreModuleAsyncOptions,
 } from './interfaces/eventstore-module.interface';
-import { TransformerService } from './transformer.service';
+import { ProjectionsService, TransformerService } from './services';
 
 @Global()
 @Module({
@@ -27,8 +27,9 @@ import { TransformerService } from './transformer.service';
     EventStore,
     EventStoreMapper,
     EventStoreCli,
-    ExplorerService,
+    ProjectionsService,
     TransformerService,
+    ExplorerService,
   ],
   exports: [EventStore],
 })

@@ -35,17 +35,6 @@ export class EventStore
     this.client = EventStoreDBClient.connectionString(config.connection);
   }
 
-  async getEvents(): Promise<Event[]> {
-    const resolvedEvents = await this.client.readAll({
-      direction: FORWARDS,
-      fromPosition: START,
-    });
-
-    return resolvedEvents
-      .map<Event>((event) => this.mapper.resolvedEventToDomainEvent(event))
-      .filter((event) => event !== undefined);
-  }
-
   async publish<T extends Event>(event: T) {
     const streamName = `${this.category}-${event.aggregateId}`;
     const expectedRevision =

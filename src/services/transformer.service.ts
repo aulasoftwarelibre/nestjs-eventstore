@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ModulesContainer } from '@nestjs/core';
 
-import { TransformerRepo } from './interfaces/transformer.type';
+import { TransformerRepo } from '../interfaces/transformer.type';
 
 export const EVENT_STORE_TRANSFORMERS_TOKEN = 'EVENT_STORE_TRANSFORMERS_TOKEN';
 

@@ -8,7 +8,7 @@ import { EventStore } from './eventstore';
 import { Config } from './eventstore.config';
 import { EventStoreCoreModule } from './eventstore-core.module';
 import { EventStoreModuleAsyncOptions, TransformerRepo } from './interfaces';
-import { EVENT_STORE_TRANSFORMERS_TOKEN } from './transformer.service';
+import { EVENT_STORE_TRANSFORMERS_TOKEN } from './services/transformer.service';
 import { getRepositoryToken } from './utils/repository';
 
 @Module({})
