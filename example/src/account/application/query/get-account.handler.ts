@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { IdNotFoundError } from '@aulasoftwarelibre/nestjs-eventstore';
+import { IdNotFoundError } from '../../../eventstore';
 import { AccountId } from '../../domain';
 import { AccountDto } from '../../dto';
 import { ACCOUNT_FINDER, IAccountFinder } from '../services';

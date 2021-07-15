@@ -1,7 +1,7 @@
 import {
   AggregateRepository,
   InjectAggregateRepository,
-} from '@aulasoftwarelibre/nestjs-eventstore';
+} from '../../../eventstore';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Account, AccountId, Amount } from '../../domain';
 import { CreateDepositCommand } from './create-deposit.command';

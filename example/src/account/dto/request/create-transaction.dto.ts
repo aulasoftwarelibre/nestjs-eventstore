@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Min } from 'class-validator';
 
 export class CreateTransactionDto {
   @ApiProperty({ required: false })
@@ -9,6 +9,7 @@ export class CreateTransactionDto {
     minimum: 1,
   })
   @IsNotEmpty()
+  @Min(1)
   value: number;
 
   @ApiProperty()

@@ -14,7 +14,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3333;
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(port, () => {
     Logger.log(`Listening at http://localhost:${port}/api`);

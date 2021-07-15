@@ -1,4 +1,4 @@
-import { AggregateRoot } from '@aulasoftwarelibre/nestjs-eventstore';
+import { AggregateRoot } from '../../../eventstore';
 import { AccountWasCreated, DepositWasDone, WithdrawalWasDone } from '../event';
 import { AccountId } from './account-id';
 import { Amount } from './amount';

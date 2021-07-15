@@ -1,5 +1,6 @@
-import { AccountDto } from '../../../dto';
 import { Document, Schema } from 'mongoose';
+
+import { AccountDto } from '../../../dto';
 
 export const ACCOUNTS_PROJECTION = 'accounts';
 

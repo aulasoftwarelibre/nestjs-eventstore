@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConsoleModule } from 'nestjs-console';
-import { EventStoreModule } from '@aulasoftwarelibre/nestjs-eventstore';
+import { EventStoreModule } from './eventstore';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AccountModule } from './account/infraestructure/account.module';
 

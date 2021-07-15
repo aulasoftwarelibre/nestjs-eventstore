@@ -1,4 +1,4 @@
-import { ValueObject } from '@aulasoftwarelibre/nestjs-eventstore';
+import { ValueObject } from '../../../eventstore';
 import { InvalidTitleError } from '../exception';
 
 interface Props {

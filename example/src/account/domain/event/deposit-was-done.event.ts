@@ -1,4 +1,4 @@
-import { Event } from '@aulasoftwarelibre/nestjs-eventstore';
+import { Event } from '../../../eventstore';
 import { CreateTransactionDto } from '../../dto/request';
 
 export class DepositWasDone extends Event<CreateTransactionDto> {

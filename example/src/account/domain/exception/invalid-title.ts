@@ -1,4 +1,4 @@
-import { DomainError } from '@aulasoftwarelibre/nestjs-eventstore';
+import { DomainError } from '../../../eventstore';
 export class InvalidTitleError extends DomainError {
   private constructor(stack?: string) {
     super(stack);
