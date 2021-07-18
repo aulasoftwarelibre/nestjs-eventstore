@@ -1,3 +1,4 @@
+import { CryptoModule } from '@akanass/nestjsx-crypto';
 import {
   DynamicModule,
   Global,
@@ -7,7 +8,9 @@ import {
 } from '@nestjs/common';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { ExplorerService } from '@nestjs/cqrs/dist/services/explorer.service';
+import { MongooseModule } from '@nestjs/mongoose';
 
+import { KEYS, KeySchema, KeyService } from './crypto';
 import { Event } from './domain';
 import { EventStore } from './eventstore';
 import { EventStoreCli } from './eventstore.cli';
@@ -22,14 +25,24 @@ import { ProjectionsService, TransformerService } from './services';
 
 @Global()
 @Module({
-  imports: [CqrsModule],
+  imports: [
+    CryptoModule,
+    CqrsModule,
+    MongooseModule.forFeature([
+      {
+        name: KEYS,
+        schema: KeySchema,
+      },
+    ]),
+  ],
   providers: [
     EventStore,
     EventStoreMapper,
     EventStoreCli,
+    ExplorerService,
+    KeyService,
     ProjectionsService,
     TransformerService,
-    ExplorerService,
   ],
   exports: [EventStore],
 })
