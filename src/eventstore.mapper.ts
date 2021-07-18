@@ -1,6 +1,7 @@
 import { ResolvedEvent } from '@eventstore/db-client';
 import { Inject, Injectable } from '@nestjs/common';
 
+import { KeyService } from './crypto';
 import { Event, Metadata } from './domain';
 import { Config } from './eventstore.config';
 import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
@@ -11,11 +12,12 @@ export class EventStoreMapper {
   constructor(
     @Inject(EVENT_STORE_SETTINGS_TOKEN) private readonly config: Config,
     private readonly transformers: TransformerService,
+    private readonly keyService: KeyService,
   ) {}
 
   public resolvedEventToDomainEvent(
     resolvedEvent: ResolvedEvent,
-  ): Event | undefined {
+  ): Promise<Event> | undefined {
     if (
       resolvedEvent.event === undefined ||
       resolvedEvent.event.type.startsWith('$') ||
@@ -27,16 +29,20 @@ export class EventStoreMapper {
     const metadata = resolvedEvent.event.metadata as Metadata;
     const payload = resolvedEvent.event.data;
 
-    return this.transformers.repo[resolvedEvent.event.type]?.(
-      new Event(metadata._aggregate_id, payload).withMetadata(metadata),
-    );
+    const event = this.transformers.repo[resolvedEvent.event.type]?.(
+      new Event(metadata._aggregate_id, payload),
+    ).withMetadata(metadata);
+
+    return this.keyService.decrypt(event);
   }
 
-  public resolvedEventsToDomainEvents(
+  public async resolvedEventsToDomainEvents(
     resolvedEvents: ResolvedEvent[],
-  ): Event[] {
-    return resolvedEvents
-      .map((resolvedEvent) => this.resolvedEventToDomainEvent(resolvedEvent))
-      .filter((event) => event !== undefined);
+  ): Promise<Event[]> {
+    return await Promise.all(
+      resolvedEvents
+        .map((resolvedEvent) => this.resolvedEventToDomainEvent(resolvedEvent))
+        .filter((event) => event !== undefined),
+    );
   }
 }

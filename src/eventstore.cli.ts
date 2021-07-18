@@ -49,7 +49,10 @@ export class EventStoreCli {
       const lastResolvedEvent = resolvedEvents[resolvedEvents.length - 1];
       position = this.incrementRevision(lastResolvedEvent.link.revision);
 
-      const events = this.mapper.resolvedEventsToDomainEvents(resolvedEvents);
+      const events = await this.mapper.resolvedEventsToDomainEvents(
+        resolvedEvents,
+      );
+
       for (const event of events) {
         const key = event.constructor.name;
 

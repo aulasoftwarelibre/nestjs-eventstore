@@ -14,6 +14,7 @@ import { IEventPublisher, IMessageSource } from '@nestjs/cqrs';
 import { Subject } from 'rxjs';
 import { v4 as uuid } from 'uuid';
 
+import { KeyService } from './crypto';
 import { AggregateRoot, Event } from './domain';
 import { Config } from './eventstore.config';
 import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
@@ -30,6 +31,7 @@ export class EventStore
   constructor(
     @Inject(EVENT_STORE_SETTINGS_TOKEN) private readonly config: Config,
     private readonly mapper: EventStoreMapper,
+    private readonly keyService: KeyService,
   ) {
     this.category = config.category;
     this.client = EventStoreDBClient.connectionString(config.connection);
@@ -40,6 +42,10 @@ export class EventStore
     const expectedRevision =
       event.version <= 0 ? NO_STREAM : BigInt(event.version - 1);
 
+    if (event.aggregateEncrypted) {
+      event = (await this.keyService.encrypt(event)) as T;
+    }
+
     const eventData = jsonEvent({
       id: uuid(),
       type: event.eventType,
@@ -47,9 +53,13 @@ export class EventStore
       metadata: event.metadata,
     });
 
-    await this.client.appendToStream(streamName, eventData, {
-      expectedRevision: expectedRevision,
-    });
+    try {
+      await this.client.appendToStream(streamName, eventData, {
+        expectedRevision: expectedRevision,
+      });
+    } catch (e) {
+      console.debug('error', e);
+    }
   }
 
   async read<T extends AggregateRoot>(
@@ -65,8 +75,10 @@ export class EventStore
         fromRevision: START,
       });
 
-      const events = resolvedEvents.map<Event>((event) =>
-        this.mapper.resolvedEventToDomainEvent(event),
+      const events = await Promise.all(
+        resolvedEvents.map<Promise<Event>>((event) =>
+          this.mapper.resolvedEventToDomainEvent(event),
+        ),
       );
 
       entity.loadFromHistory(events);
@@ -87,7 +99,9 @@ export class EventStore
     const streamName = `$ce-${this.category}`;
 
     const onEvent = async (resolvedEvent: ResolvedEvent) => {
-      subject.next(<T>this.mapper.resolvedEventToDomainEvent(resolvedEvent));
+      subject.next(
+        <T>await this.mapper.resolvedEventToDomainEvent(resolvedEvent),
+      );
     };
 
     try {
