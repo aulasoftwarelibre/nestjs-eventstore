@@ -1,4 +1,4 @@
-import { ValueObject } from '../../../eventstore';
+import { ValueObject } from '../../../nestjs-eventstore';
 import { Amount } from './amount';
 
 interface Props {

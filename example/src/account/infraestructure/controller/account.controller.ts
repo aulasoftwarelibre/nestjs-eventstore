@@ -8,7 +8,10 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { IdAlreadyRegisteredError, IdNotFoundError } from '../../../eventstore';
+import {
+  IdAlreadyRegisteredError,
+  IdNotFoundError,
+} from '../../../nestjs-eventstore';
 import { catchError } from '../../../utils';
 import { AccountDto, CreateAccountDto, CreateTransactionDto } from '../../dto';
 import { AccountService } from '../account.service';

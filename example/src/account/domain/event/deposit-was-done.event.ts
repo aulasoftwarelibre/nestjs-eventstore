@@ -1,4 +1,4 @@
-import { Event } from '../../../eventstore';
+import { Event } from '../../../nestjs-eventstore';
 import { CreateTransactionDto } from '../../dto/request';
 
 export class DepositWasDone extends Event<CreateTransactionDto> {

@@ -1,4 +1,4 @@
-import { AggregateRoot } from '../../../eventstore';
+import { AggregateRoot } from '../../../nestjs-eventstore';
 import { AccountWasCreated, DepositWasDone, WithdrawalWasDone } from '../event';
 import { AccountId } from './account-id';
 import { Amount } from './amount';
@@ -16,6 +16,10 @@ export class Account extends AggregateRoot {
     account.apply(new AccountWasCreated(accountId.value, title.value));
 
     return account;
+  }
+
+  aggregateId(): string {
+    return this.id.value;
   }
 
   get id(): AccountId {

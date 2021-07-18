@@ -32,16 +32,32 @@ services:
         source: mongo-volume-data
         target: /data/db
 
-  mongoclient:
-    image: mongoclient/mongoclient
+  mongo-express:
+    depends_on:
+      - mongo
+    image: mongo-express:latest
+    ports:
+      - 8081:8081
+
+  app:
+    depends_on:
+      - eventstore.db
+      - mongo
+    build:
+      context: .
     ports:
       - 3000:3000
-    volumes:
-      - type: volume
-        source: mongoclient-volume-data
-        target: /data/db
     environment:
-      - MONGO_URL=mongodb://mongo:27017/mongoclient
+      - MONGO_URI=mongodb://mongo:27017/projections
+      - EVENTSTORE_URI=esdb://eventstore.db:2113?tls=false
+      - PORT=3000
+    volumes:
+      - type: bind
+        source: ./example/
+        target: /app
+      - type: bind
+        source: ./src/
+        target: /app/src/nestjs-eventstore/
 
 volumes:
   eventstore-volume-data:

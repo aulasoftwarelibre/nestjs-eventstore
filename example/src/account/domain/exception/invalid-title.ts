@@ -1,4 +1,4 @@
-import { DomainError } from '../../../eventstore';
+import { DomainError } from '../../../nestjs-eventstore';
 export class InvalidTitleError extends DomainError {
   private constructor(stack?: string) {
     super(stack);

@@ -22,3 +22,7 @@ export class CreateTransactionDto {
     this.date = date;
   }
 }
+
+export function isCreateTransactionDto(arg: any): arg is CreateTransactionDto {
+  return arg && arg._id && arg.value && arg.date;
+}

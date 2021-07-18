@@ -16,3 +16,7 @@ export class CreateAccountDto {
     this.title = title;
   }
 }
+
+export function isCreateAccountDto(arg: any): arg is CreateAccountDto {
+  return arg && arg._id && arg.title;
+}
