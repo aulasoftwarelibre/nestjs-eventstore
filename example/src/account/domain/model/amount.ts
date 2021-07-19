@@ -5,7 +5,7 @@ interface Props {
 }
 
 export class Amount extends ValueObject<Props> {
-  public static fromNumber(value: number): Amount {
+  public static with(value: number): Amount {
     return new Amount({ value });
   }
 
@@ -14,6 +14,6 @@ export class Amount extends ValueObject<Props> {
   }
 
   public negative(): Amount {
-    return Amount.fromNumber(-this.value);
+    return Amount.with(-this.value);
   }
 }

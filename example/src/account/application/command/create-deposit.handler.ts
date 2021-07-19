@@ -16,8 +16,8 @@ export class CreateDepositHandler
   ) {}
 
   async execute(command: CreateDepositCommand) {
-    const accountId = AccountId.fromString(command.accountId);
-    const value = Amount.fromNumber(command.value);
+    const accountId = AccountId.with(command.accountId);
+    const value = Amount.with(command.value);
     const date = command.date;
 
     const account = await this.accounts.find(accountId);

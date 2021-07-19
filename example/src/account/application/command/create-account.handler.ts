@@ -18,8 +18,8 @@ export class CreateAccountHandler
   ) {}
 
   async execute(command: CreateAccountCommand) {
-    const accountId = AccountId.fromString(command.id);
-    const title = Title.fromString(command.title);
+    const accountId = AccountId.with(command.id);
+    const title = Title.with(command.title);
 
     if ((await this.accounts.find(accountId)) instanceof Account) {
       throw IdAlreadyRegisteredError.withId(accountId);

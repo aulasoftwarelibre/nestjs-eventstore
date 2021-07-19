@@ -41,20 +41,20 @@ export class Account extends AggregateRoot {
   }
 
   private onAccountWasCreated(event: AccountWasCreated) {
-    this._accountId = AccountId.fromString(event.id);
-    this._title = Title.fromString(event.title);
+    this._accountId = AccountId.with(event.id);
+    this._title = Title.with(event.title);
     this._transactions = [];
   }
 
   private onDepositWasDone(event: DepositWasDone) {
     this._transactions.push(
-      Transaction.from(Amount.fromNumber(event.value), event.date),
+      Transaction.with(Amount.with(event.value), event.date),
     );
   }
 
   private onWithdrawalWasDone(event: WithdrawalWasDone) {
     this._transactions.push(
-      Transaction.from(Amount.fromNumber(event.value).negative(), event.date),
+      Transaction.with(Amount.with(event.value).negative(), event.date),
     );
   }
 }

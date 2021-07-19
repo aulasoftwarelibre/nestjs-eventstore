@@ -16,8 +16,8 @@ export class CreateWidthdrawalHandler
   ) {}
 
   async execute(command: CreateWidthdrawalCommand) {
-    const accountId = AccountId.fromString(command.accountId);
-    const value = Amount.fromNumber(command.value);
+    const accountId = AccountId.with(command.accountId);
+    const value = Amount.with(command.value);
     const date = command.date;
 
     const account = await this.accounts.find(accountId);

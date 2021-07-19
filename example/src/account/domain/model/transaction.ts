@@ -7,7 +7,7 @@ interface Props {
 }
 
 export class Transaction extends ValueObject<Props> {
-  public static from(value: Amount, date: Date) {
+  public static with(value: Amount, date: Date) {
     return new Transaction({ value, date });
   }
 

@@ -6,7 +6,7 @@ interface Props {
 }
 
 export class Title extends ValueObject<Props> {
-  public static fromString(value: string) {
+  public static with(value: string) {
     if (value.length === 0) {
       throw InvalidTitleError.becauseEmpty();
     }

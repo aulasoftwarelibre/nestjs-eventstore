@@ -13,7 +13,7 @@ export class GetAccountHandler implements IQueryHandler<GetAccountQuery> {
   ) {}
 
   async execute(query: GetAccountQuery): Promise<AccountDto> {
-    const accountId = AccountId.fromString(query.id);
+    const accountId = AccountId.with(query.id);
 
     const account = await this.finder.find(accountId);
 
