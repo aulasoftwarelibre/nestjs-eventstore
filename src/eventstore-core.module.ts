@@ -15,7 +15,10 @@ import { Event } from './domain';
 import { EventStore } from './eventstore';
 import { EventStoreCli } from './eventstore.cli';
 import { Config } from './eventstore.config';
-import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
+import {
+  EVENTSTORE_KEYSTORE_CONNECTION,
+  EVENTSTORE_SETTINGS_TOKEN,
+} from './eventstore.constants';
 import { EventStoreMapper } from './eventstore.mapper';
 import {
   ConfigService,
@@ -28,12 +31,15 @@ import { ProjectionsService, TransformerService } from './services';
   imports: [
     CryptoModule,
     CqrsModule,
-    MongooseModule.forFeature([
-      {
-        name: KEYS,
-        schema: KeySchema,
-      },
-    ]),
+    MongooseModule.forFeature(
+      [
+        {
+          name: KEYS,
+          schema: KeySchema,
+        },
+      ],
+      EVENTSTORE_KEYSTORE_CONNECTION,
+    ),
   ],
   providers: [
     EventStore,
@@ -44,7 +50,7 @@ import { ProjectionsService, TransformerService } from './services';
     ProjectionsService,
     TransformerService,
   ],
-  exports: [EventStore],
+  exports: [EventStore, KeyService],
 })
 export class EventStoreCoreModule implements OnModuleInit {
   constructor(
@@ -55,7 +61,7 @@ export class EventStoreCoreModule implements OnModuleInit {
   public static forRoot(config: Config): DynamicModule {
     return {
       module: EventStoreCoreModule,
-      providers: [{ provide: EVENT_STORE_SETTINGS_TOKEN, useValue: config }],
+      providers: [{ provide: EVENTSTORE_SETTINGS_TOKEN, useValue: config }],
       exports: [EventStore],
     };
   }
@@ -74,13 +80,13 @@ export class EventStoreCoreModule implements OnModuleInit {
   ): Provider {
     if ('useFactory' in options) {
       return {
-        provide: EVENT_STORE_SETTINGS_TOKEN,
+        provide: EVENTSTORE_SETTINGS_TOKEN,
         ...options,
       };
     }
 
     return {
-      provide: EVENT_STORE_SETTINGS_TOKEN,
+      provide: EVENTSTORE_SETTINGS_TOKEN,
       useFactory: async (optionsFactory: ConfigService) =>
         optionsFactory.createEventStoreConfig(),
       ...('useClass' in options
