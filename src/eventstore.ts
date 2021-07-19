@@ -17,7 +17,7 @@ import { v4 as uuid } from 'uuid';
 import { KeyService } from './crypto';
 import { AggregateRoot, Event } from './domain';
 import { Config } from './eventstore.config';
-import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
+import { EVENTSTORE_SETTINGS_TOKEN } from './eventstore.constants';
 import { EventStoreMapper } from './eventstore.mapper';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class EventStore
   private readonly logger = new Logger(EventStore.name);
 
   constructor(
-    @Inject(EVENT_STORE_SETTINGS_TOKEN) private readonly config: Config,
+    @Inject(EVENTSTORE_SETTINGS_TOKEN) private readonly config: Config,
     private readonly mapper: EventStoreMapper,
     private readonly keyService: KeyService,
   ) {
@@ -43,7 +43,7 @@ export class EventStore
       event.version <= 0 ? NO_STREAM : BigInt(event.version - 1);
 
     if (event.aggregateEncrypted) {
-      event = (await this.keyService.encrypt(event)) as T;
+      event = (await this.keyService.encryptEvent(event)) as T;
     }
 
     const eventData = jsonEvent({

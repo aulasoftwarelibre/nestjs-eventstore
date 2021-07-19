@@ -1,3 +1,3 @@
 export * from './key.dto';
 export * from './key.schema';
-export * from './key.service'
+export * from './key.service';

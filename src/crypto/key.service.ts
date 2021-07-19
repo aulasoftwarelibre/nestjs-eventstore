@@ -38,7 +38,7 @@ export class KeyService {
     this.keys.findByIdAndRemove(id).exec();
   }
 
-  async encrypt(event: Event): Promise<Event> {
+  async encryptEvent(event: Event): Promise<Event> {
     let key = await this.find(event.aggregateId);
 
     if (!key) {
@@ -56,7 +56,19 @@ export class KeyService {
     return event.withEncryptedPayload(buffer.toString('base64'));
   }
 
-  async decrypt(event: Event): Promise<Event> {
+  async decryptPayload(id: string, encryptedPayload: string): Promise<string> {
+    const key = await this.find(id);
+    const source$ = await this.aesService
+      .createKey(key.secret, key.salt)
+      .pipe(decryptWithAesKey(Buffer.from(encryptedPayload, 'base64')));
+
+    const buffer = await firstValueFrom(source$);
+    const payload = JSON.parse(buffer.toString('utf16le'));
+
+    return payload;
+  }
+
+  async decrypt2(event: Event): Promise<Event> {
     const key = await this.find(event.aggregateId);
     const data = event.encryptedPayload;
 

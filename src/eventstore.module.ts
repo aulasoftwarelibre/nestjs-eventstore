@@ -3,6 +3,7 @@ import { CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { ConsoleModule } from 'nestjs-console';
 
 import { AggregateRepository } from './aggregate.repository';
+import { KeyService } from './crypto';
 import { AggregateRoot } from './domain';
 import { EventStore } from './eventstore';
 import { Config } from './eventstore.config';
@@ -58,9 +59,18 @@ export class EventStoreModule {
   ): Provider[] {
     return aggregateRoots.map((aggregateRoot) => ({
       provide: getRepositoryToken(aggregateRoot),
-      useFactory: (eventStore: EventStore, publisher: EventPublisher) =>
-        new AggregateRepository(aggregateRoot, eventStore, publisher),
-      inject: [EventStore, EventPublisher],
+      useFactory: (
+        eventStore: EventStore,
+        publisher: EventPublisher,
+        keyService: KeyService,
+      ) =>
+        new AggregateRepository(
+          aggregateRoot,
+          eventStore,
+          publisher,
+          keyService,
+        ),
+      inject: [EventStore, EventPublisher, KeyService],
     }));
   }
 }

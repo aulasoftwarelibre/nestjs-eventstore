@@ -4,18 +4,18 @@ import { Inject, Injectable } from '@nestjs/common';
 import { KeyService } from './crypto';
 import { Event, Metadata } from './domain';
 import { Config } from './eventstore.config';
-import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
+import { EVENTSTORE_SETTINGS_TOKEN } from './eventstore.constants';
 import { TransformerService } from './services';
 
 @Injectable()
 export class EventStoreMapper {
   constructor(
-    @Inject(EVENT_STORE_SETTINGS_TOKEN) private readonly config: Config,
+    @Inject(EVENTSTORE_SETTINGS_TOKEN) private readonly config: Config,
     private readonly transformers: TransformerService,
     private readonly keyService: KeyService,
   ) {}
 
-  public resolvedEventToDomainEvent(
+  public async resolvedEventToDomainEvent(
     resolvedEvent: ResolvedEvent,
   ): Promise<Event> | undefined {
     if (
@@ -27,13 +27,20 @@ export class EventStoreMapper {
     }
 
     const metadata = resolvedEvent.event.metadata as Metadata;
-    const payload = resolvedEvent.event.data;
+    let payload = resolvedEvent.event.data;
+
+    if (metadata._aggregate_encrypted) {
+      payload = await this.keyService.decryptPayload(
+        metadata._aggregate_id,
+        metadata._encrypted_payload,
+      );
+    }
 
     const event = this.transformers.repo[resolvedEvent.event.type]?.(
       new Event(metadata._aggregate_id, payload),
     ).withMetadata(metadata);
 
-    return this.keyService.decrypt(event);
+    return event;
   }
 
   public async resolvedEventsToDomainEvents(

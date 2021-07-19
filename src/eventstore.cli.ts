@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 import { Command, Console } from 'nestjs-console';
 
 import { Config } from './eventstore.config';
-import { EVENT_STORE_SETTINGS_TOKEN } from './eventstore.constants';
+import { EVENTSTORE_SETTINGS_TOKEN } from './eventstore.constants';
 import { EventStoreMapper } from './eventstore.mapper';
 import { ProjectionsService } from './services';
 
@@ -15,7 +15,7 @@ export class EventStoreCli {
   constructor(
     private readonly mapper: EventStoreMapper,
     private readonly projections: ProjectionsService,
-    @Inject(EVENT_STORE_SETTINGS_TOKEN) private readonly config: Config,
+    @Inject(EVENTSTORE_SETTINGS_TOKEN) private readonly config: Config,
   ) {
     this.client = EventStoreDBClient.connectionString(config.connection);
     this.category = config.category;

@@ -40,7 +40,7 @@ describe('KeyService', () => {
   });
 
   describe('encrypt', () => {
-    it('should be able to encrypt a string', async () => {
+    it('should be able to encrypt an event', async () => {
       const aggregateId = uuid();
       const event = new Event(aggregateId, PAYLOAD);
 
@@ -48,7 +48,7 @@ describe('KeyService', () => {
         exec: jest.fn().mockResolvedValueOnce(generateKey(aggregateId)) as any,
       } as any);
 
-      const result = await keyService.encrypt(event);
+      const result = await keyService.encryptEvent(event);
 
       expect(keys.findById).toBeCalledWith(aggregateId);
       expect(result.encryptedPayload).toEqual(ENCRYPTED_PAYLOAD);
@@ -58,18 +58,18 @@ describe('KeyService', () => {
   describe('decrypt', () => {
     it('should be able to decrypt a string', async () => {
       const aggregateId = uuid();
-      const event = new Event(aggregateId, {}).withEncryptedPayload(
-        ENCRYPTED_PAYLOAD,
-      );
 
       jest.spyOn(keys, 'findById').mockReturnValue({
         exec: jest.fn().mockResolvedValueOnce(generateKey(aggregateId)) as any,
       } as any);
 
-      const result = await keyService.decrypt(event);
+      const result = await keyService.decryptPayload(
+        aggregateId,
+        ENCRYPTED_PAYLOAD,
+      );
 
       expect(keys.findById).toBeCalledWith(aggregateId);
-      expect(result.payload).toEqual(PAYLOAD);
+      expect(result).toEqual(PAYLOAD);
     });
   });
 });
