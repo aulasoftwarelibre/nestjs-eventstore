@@ -1,5 +1,5 @@
 import { ACCOUNT_FINDER } from '../application';
-import { AccountFinder } from './services/account.finder.service';
+import { AccountFinder } from './services';
 
 export const accountProviders = [
   {

@@ -6,8 +6,8 @@ import {
   CreateWidthdrawalCommand,
   GetAccountQuery,
   GetAccountsQuery,
-} from '../application';
-import { AccountDto, CreateAccountDto, CreateTransactionDto } from '../dto';
+} from '../../application';
+import { AccountDto, CreateAccountDto, CreateTransactionDto } from '../../dto';
 
 @Injectable()
 export class AccountService {

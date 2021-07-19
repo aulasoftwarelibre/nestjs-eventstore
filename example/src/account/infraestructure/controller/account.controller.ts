@@ -14,7 +14,7 @@ import {
 } from '../../../nestjs-eventstore';
 import { catchError } from '../../../utils';
 import { AccountDto, CreateAccountDto, CreateTransactionDto } from '../../dto';
-import { AccountService } from '../account.service';
+import { AccountService } from '../services';
 
 @ApiTags('Accounts')
 @Controller('accounts')

@@ -1,6 +1,13 @@
+import { CreateAccountHandler } from './create-account.handler';
+import { CreateDepositHandler } from './create-deposit.handler';
+import { CreateWidthdrawalHandler } from './create-widthdrawal.handler';
+
 export * from './create-account.command';
-export * from './create-account.handler';
 export * from './create-deposit.command';
-export * from './create-deposit.handler';
 export * from './create-widthdrawal.command';
-export * from './create-widthdrawal.handler';
+
+export const commandHandlers = [
+  CreateAccountHandler,
+  CreateDepositHandler,
+  CreateWidthdrawalHandler,
+];

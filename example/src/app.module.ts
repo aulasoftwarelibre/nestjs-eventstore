@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ConsoleModule } from 'nestjs-console';
 import { EventStoreModule } from './nestjs-eventstore';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AccountModule } from './account/infraestructure/account.module';
-import { ConfigModule } from '@nestjs/config';
+import { AccountModule } from './account';
+import {
+  EventStoreModule,
 
 @Module({
   imports: [
