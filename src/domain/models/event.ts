@@ -16,9 +16,9 @@ export class Event<P = unknown> implements IEvent {
   private _payload: P;
   private _metadata: Metadata;
 
-  public constructor(aggregateId: string, payload: P) {
+  public constructor(aggregateId: string, payload?: P) {
     this.eventId = uuid.v4();
-    this._payload = Object.assign({}, payload);
+    this._payload = { ...payload };
     this.eventType = Object.getPrototypeOf(this).constructor.name;
     this._metadata = {
       _aggregate_id: aggregateId,

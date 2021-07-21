@@ -1,7 +1,13 @@
-import { EventStoreDBClient, FORWARDS, START } from '@eventstore/db-client';
-import { Inject } from '@nestjs/common';
+import {
+  EventStoreDBClient,
+  FORWARDS,
+  ResolvedEvent,
+  START,
+} from '@eventstore/db-client';
+import { Inject, Logger } from '@nestjs/common';
 import { Command, Console } from 'nestjs-console';
 
+import { Event } from './domain';
 import { Config } from './eventstore.config';
 import { EVENTSTORE_SETTINGS_TOKEN } from './eventstore.constants';
 import { EventStoreMapper } from './eventstore.mapper';
@@ -9,16 +15,19 @@ import { ProjectionsService } from './services';
 
 @Console()
 export class EventStoreCli {
-  private client: EventStoreDBClient;
-  private category: string;
+  private readonly category: string;
+  private readonly client: EventStoreDBClient;
+  private readonly logger = new Logger(EventStoreCli.name);
+  private readonly eventHandlers;
 
   constructor(
     private readonly mapper: EventStoreMapper,
-    private readonly projections: ProjectionsService,
-    @Inject(EVENTSTORE_SETTINGS_TOKEN) private readonly config: Config,
+    projections: ProjectionsService,
+    @Inject(EVENTSTORE_SETTINGS_TOKEN) config: Config,
   ) {
     this.client = EventStoreDBClient.connectionString(config.connection);
     this.category = config.category;
+    this.eventHandlers = projections.eventHandlers();
   }
 
   @Command({
@@ -26,8 +35,6 @@ export class EventStoreCli {
     description: 'Restore read model',
   })
   async restore(): Promise<void> {
-    const eventHandlers = this.projections.eventHandlers();
-
     let position: any = START;
     const MAX_COUNT = 1000;
 
@@ -46,27 +53,35 @@ export class EventStoreCli {
         break;
       }
 
-      const lastResolvedEvent = resolvedEvents[resolvedEvents.length - 1];
-      position = this.incrementRevision(lastResolvedEvent.link.revision);
-
-      const events = await this.mapper.resolvedEventsToDomainEvents(
-        resolvedEvents,
-      );
-
-      for (const event of events) {
-        const key = event.constructor.name;
-
-        for (const eventHandler of eventHandlers[key]) {
-          await eventHandler.handle(event);
-        }
-      }
+      await this.handleResolvedEvents(resolvedEvents);
+      position = this.calculateNextPosition(resolvedEvents);
     }
 
-    console.log('View db has been restored!');
+    this.logger.log('Projections have been restored!');
     process.exit(0);
   }
 
-  private incrementRevision(revision: bigint): bigint {
+  private async handleResolvedEvents(resolvedEvents: ResolvedEvent[]) {
+    for (const resolvedEvent of resolvedEvents) {
+      const event = await this.mapper.resolvedEventToDomainEvent(resolvedEvent);
+
+      if (!event) continue;
+
+      await this.handleEvent(event);
+    }
+  }
+
+  private async handleEvent(event: Event) {
+    const key = event.constructor.name;
+    for (const eventHandler of this.eventHandlers[key]) {
+      await eventHandler.handle(event);
+    }
+  }
+
+  private calculateNextPosition(resolvedEvents: ResolvedEvent[]): bigint {
+    const lastResolvedEvent = resolvedEvents[resolvedEvents.length - 1];
+    const revision = lastResolvedEvent.link.revision;
+
     return BigInt(Number(revision) + 1);
   }
 }

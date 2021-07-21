@@ -10,7 +10,7 @@ import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { ExplorerService } from '@nestjs/cqrs/dist/services/explorer.service';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { KEYS, KeySchema, KeyService } from './crypto';
+import { KEYS, KeySchema } from './crypto';
 import { Event } from './domain';
 import { EventStore } from './eventstore';
 import { EventStoreCli } from './eventstore.cli';
@@ -20,11 +20,8 @@ import {
   EVENTSTORE_SETTINGS_TOKEN,
 } from './eventstore.constants';
 import { EventStoreMapper } from './eventstore.mapper';
-import {
-  ConfigService,
-  EventStoreModuleAsyncOptions,
-} from './interfaces/eventstore-module.interface';
-import { ProjectionsService, TransformerService } from './services';
+import { ConfigService, EventStoreModuleAsyncOptions } from './interfaces';
+import { KeyService, ProjectionsService, TransformerService } from './services';
 
 @Global()
 @Module({

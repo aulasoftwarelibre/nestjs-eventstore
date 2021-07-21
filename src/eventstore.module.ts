@@ -3,14 +3,13 @@ import { CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { ConsoleModule } from 'nestjs-console';
 
 import { AggregateRepository } from './aggregate.repository';
-import { KeyService } from './crypto';
 import { AggregateRoot } from './domain';
 import { EventStore } from './eventstore';
 import { Config } from './eventstore.config';
 import { EventStoreCoreModule } from './eventstore-core.module';
 import { EventStoreModuleAsyncOptions, TransformerRepo } from './interfaces';
-import { EVENT_STORE_TRANSFORMERS_TOKEN } from './services/transformer.service';
-import { getRepositoryToken } from './utils/repository';
+import { EVENT_STORE_TRANSFORMERS_TOKEN, KeyService } from './services';
+import { getRepositoryToken } from './utils';
 
 @Module({})
 export class EventStoreModule {

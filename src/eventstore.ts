@@ -14,11 +14,11 @@ import { IEventPublisher, IMessageSource } from '@nestjs/cqrs';
 import { Subject } from 'rxjs';
 import { v4 as uuid } from 'uuid';
 
-import { KeyService } from './crypto';
 import { AggregateRoot, Event } from './domain';
 import { Config } from './eventstore.config';
 import { EVENTSTORE_SETTINGS_TOKEN } from './eventstore.constants';
 import { EventStoreMapper } from './eventstore.mapper';
+import { KeyService } from './services';
 
 @Injectable()
 export class EventStore
@@ -84,12 +84,12 @@ export class EventStore
       entity.loadFromHistory(events);
 
       return entity;
-    } catch (err) {
-      if (err?.type === ErrorType.STREAM_NOT_FOUND) {
+    } catch (error) {
+      if (error?.type === ErrorType.STREAM_NOT_FOUND) {
         return null;
       }
 
-      this.logger.debug(err);
+      this.logger.debug(error);
     }
 
     return null;
@@ -111,8 +111,8 @@ export class EventStore
           resolveLinkTos: true,
         })
         .on('data', onEvent);
-    } catch (err) {
-      this.logger.debug(err);
+    } catch (error) {
+      this.logger.debug(error);
     }
   }
 }
