@@ -1,12 +1,12 @@
 import { CryptoModule } from '@akanass/nestjsx-crypto';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
-import { KeyDto } from './key.dto';
-import { KeyDocument, KEYS } from './key.schema';
-import { KeyService } from './key.service';
-import { Event } from '../domain';
 import { v4 as uuid } from 'uuid';
 import { Model } from 'mongoose';
+
+import { KeyDto, KeyDocument, KEYS } from '../crypto';
+import { Event } from '../domain';
+import { KeyService } from './key.service';
 
 describe('KeyService', () => {
   const PAYLOAD = { foo: 'bar' };

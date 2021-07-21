@@ -9,9 +9,9 @@ import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { v4 as uuid } from 'uuid';
 
+import { KeyDocument, KeyDto, KEYS } from '../crypto';
 import { Event } from '../domain';
-import { KeyDto } from './key.dto';
-import { KeyDocument, KEYS } from './key.schema';
+import { KeyNotFoundError } from '../errors';
 
 @Injectable()
 export class KeyService {
@@ -58,6 +58,11 @@ export class KeyService {
 
   async decryptPayload(id: string, encryptedPayload: string): Promise<string> {
     const key = await this.find(id);
+
+    if (!key) {
+      throw KeyNotFoundError.withId(id);
+    }
+
     const source$ = await this.aesService
       .createKey(key.secret, key.salt)
       .pipe(decryptWithAesKey(Buffer.from(encryptedPayload, 'base64')));
