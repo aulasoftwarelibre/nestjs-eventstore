@@ -48,16 +48,10 @@ services:
     ports:
       - 3000:3000
     environment:
-      - MONGO_URI=mongodb://mongo:27017/projections
+      - MONGO_URI=mongodb://mongo:27017/example
       - EVENTSTORE_URI=esdb://eventstore.db:2113?tls=false
+      - KEYSTORE_URI=mongodb://mongo:27017/keystore
       - PORT=3000
-    volumes:
-      - type: bind
-        source: ./example/
-        target: /app
-      - type: bind
-        source: ./src/
-        target: /app/src/nestjs-eventstore/
 
 volumes:
   eventstore-volume-data:

@@ -5,6 +5,9 @@ import { AppModule } from './app.module';
 const bootstrap = new BootstrapConsole({
   module: AppModule,
   useDecorators: true,
+  contextOptions: {
+    logger: ['debug', 'error', 'log', 'verbose', 'warn'],
+  },
 });
 bootstrap.init().then(async (app) => {
   try {

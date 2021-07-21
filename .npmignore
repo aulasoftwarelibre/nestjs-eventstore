@@ -1,4 +1,6 @@
 # source
+example
+node_modules
 src
 index.ts
 package-lock.json
@@ -8,4 +10,5 @@ tsconfig.build.json
 .eslintignore
 .eslintrc.js
 .prettierrc
+.prettierignore
 .release-it.json

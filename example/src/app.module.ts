@@ -9,6 +9,7 @@ import {
   EventStoreModule,
   EVENTSTORE_KEYSTORE_CONNECTION,
 } from './nestjs-eventstore';
+import { UserModule } from './user';
 
 @Module({
   imports: [
@@ -27,11 +28,19 @@ import {
       category: 'example',
       connection: process.env.EVENTSTORE_URI,
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.MONGO_URI, {
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useNewUrlParser: true,
+    }),
     MongooseModule.forRoot(process.env.KEYSTORE_URI, {
       connectionName: EVENTSTORE_KEYSTORE_CONNECTION,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useNewUrlParser: true,
     }),
     AccountModule,
+    UserModule,
   ],
 })
 export class AppModule {}
