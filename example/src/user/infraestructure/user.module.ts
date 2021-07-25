@@ -10,7 +10,7 @@ import {
   UserWasCreated,
   UserWasDeleted,
 } from '../domain';
-import { CreateUserDto, UpdateUserDto } from '../dto';
+import { CreateUserDto } from '../dto';
 import { UserController } from './controller';
 import { projectionHandlers, UserSchema, USERS_PROJECTION } from './read-model';
 import { UserService } from './services';

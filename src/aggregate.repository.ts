@@ -17,14 +17,14 @@ export class AggregateRepository<T extends AggregateRoot, U extends Id> {
     return this.eventStore.read<T>(this.Aggregate, id.value);
   }
 
-  public save(entity: T): void {
+  public save(entity: T) {
     entity = this.publisher.mergeObjectContext(entity);
     entity.commit();
   }
 
-  public delete(entity: T): void {
+  public async delete(entity: T) {
     this.save(entity);
 
-    this.keyService.delete(entity.aggregateId());
+    await this.keyService.delete(entity.aggregateId());
   }
 }
