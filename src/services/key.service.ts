@@ -3,7 +3,7 @@ import {
   decryptWithAesKey,
   encryptWithAesKey,
 } from '@akanass/nestjsx-crypto/operators/aes';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
@@ -15,6 +15,8 @@ import { KeyNotFoundError } from '../errors';
 
 @Injectable()
 export class KeyService {
+  private readonly logger = new Logger(KeyService.name);
+
   constructor(
     @InjectModel(KEYS)
     private readonly keys: Model<KeyDocument>,
@@ -31,7 +33,7 @@ export class KeyService {
   }
 
   async find(id: string): Promise<KeyDto> {
-    return this.keys.findById(id).exec();
+    return this.keys.findById(id).lean();
   }
 
   async delete(id: string): Promise<void> {
@@ -39,10 +41,16 @@ export class KeyService {
   }
 
   async encryptEvent(event: Event): Promise<Event> {
-    let key = await this.find(event.aggregateId);
+    const key =
+      event.version === 0
+        ? await this.create(event.aggregateId)
+        : await this.find(event.aggregateId);
 
     if (!key) {
-      key = await this.create(event.aggregateId);
+      this.logger.error(
+        `Key not found during encrypting event ${event.eventType} with id [${event.aggregateId}]`,
+      );
+      return event;
     }
 
     const data = JSON.stringify(event.payload);
@@ -71,23 +79,5 @@ export class KeyService {
     const payload = JSON.parse(buffer.toString('utf16le'));
 
     return payload;
-  }
-
-  async decrypt2(event: Event): Promise<Event> {
-    const key = await this.find(event.aggregateId);
-    const data = event.encryptedPayload;
-
-    if (!event.aggregateEncrypted) {
-      return event;
-    }
-
-    const source$ = this.aesService
-      .createKey(key.secret, key.salt)
-      .pipe(decryptWithAesKey(Buffer.from(data, 'base64')));
-
-    const buffer = await firstValueFrom(source$);
-    const payload = JSON.parse(buffer.toString('utf16le'));
-
-    return event.withPayload(payload);
   }
 }

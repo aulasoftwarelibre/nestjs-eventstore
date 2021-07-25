@@ -45,7 +45,7 @@ describe('KeyService', () => {
       const event = new Event(aggregateId, PAYLOAD);
 
       jest.spyOn(keys, 'findById').mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(generateKey(aggregateId)) as any,
+        lean: jest.fn().mockResolvedValueOnce(generateKey(aggregateId)) as any,
       } as any);
 
       const result = await keyService.encryptEvent(event);
@@ -60,7 +60,7 @@ describe('KeyService', () => {
       const aggregateId = uuid();
 
       jest.spyOn(keys, 'findById').mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(generateKey(aggregateId)) as any,
+        lean: jest.fn().mockResolvedValueOnce(generateKey(aggregateId)) as any,
       } as any);
 
       const result = await keyService.decryptPayload(
