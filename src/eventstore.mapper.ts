@@ -56,7 +56,7 @@ export class EventStoreMapper {
     resolvedEvent: ResolvedEvent,
   ): Promise<JSONType | Uint8Array> {
     const metadata = resolvedEvent.event.metadata as Metadata;
-    return metadata._aggregate_encrypted
+    return metadata._encrypted_payload
       ? await this.keyService.decryptPayload(
           metadata._aggregate_id,
           metadata._encrypted_payload,
