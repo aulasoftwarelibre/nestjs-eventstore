@@ -1,9 +1,4 @@
-import {
-  EventStoreDBClient,
-  FORWARDS,
-  ResolvedEvent,
-  START,
-} from '@eventstore/db-client';
+import { EventStoreDBClient, FORWARDS, START } from '@eventstore/db-client';
 import { Inject, Logger } from '@nestjs/common';
 import { Command, Console } from 'nestjs-console';
 
@@ -35,40 +30,25 @@ export class EventStoreCli {
     description: 'Restore read model',
   })
   async restore(): Promise<void> {
-    let position: any = START;
-    const MAX_COUNT = 1000;
+    const resolvedEvents = await this.client.readStream(
+      `$ce-${this.category}`,
+      {
+        direction: FORWARDS,
+        fromRevision: START,
+        resolveLinkTos: true,
+      },
+    );
 
-    while (true) {
-      const resolvedEvents = await this.client.readStream(
-        `$ce-${this.category}`,
-        {
-          direction: FORWARDS,
-          fromRevision: position,
-          maxCount: MAX_COUNT,
-          resolveLinkTos: true,
-        },
-      );
-
-      if (resolvedEvents.length === 0) {
-        break;
-      }
-
-      await this.handleResolvedEvents(resolvedEvents);
-      position = this.calculateNextPosition(resolvedEvents);
-    }
-
-    this.logger.log('Projections have been restored!');
-    process.exit(0);
-  }
-
-  private async handleResolvedEvents(resolvedEvents: ResolvedEvent[]) {
-    for (const resolvedEvent of resolvedEvents) {
+    for await (const resolvedEvent of resolvedEvents) {
       const event = await this.mapper.resolvedEventToDomainEvent(resolvedEvent);
 
       if (!event) continue;
 
       await this.handleEvent(event);
     }
+
+    this.logger.log('Projections have been restored!');
+    process.exit(0);
   }
 
   private async handleEvent(event: Event) {
@@ -76,12 +56,5 @@ export class EventStoreCli {
     for (const eventHandler of this.eventHandlers[key]) {
       await eventHandler.handle(event);
     }
-  }
-
-  private calculateNextPosition(resolvedEvents: ResolvedEvent[]): bigint {
-    const lastResolvedEvent = resolvedEvents[resolvedEvents.length - 1];
-    const revision = lastResolvedEvent.link.revision;
-
-    return BigInt(Number(revision) + 1);
   }
 }

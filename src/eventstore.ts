@@ -93,11 +93,11 @@ export class EventStore
         fromRevision: START,
       });
 
-      const events = await Promise.all(
-        resolvedEvents.map<Promise<Event>>((event) =>
-          this.mapper.resolvedEventToDomainEvent(event),
-        ),
-      );
+      const events = [] as Event[];
+
+      for await (const event of resolvedEvents) {
+        events.push(await this.mapper.resolvedEventToDomainEvent(event));
+      }
 
       entity.loadFromHistory(events);
 
