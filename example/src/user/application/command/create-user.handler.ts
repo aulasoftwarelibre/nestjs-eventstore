@@ -24,6 +24,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     }
 
     const user = User.add(userId, username, password);
+    user.updatePassword(Password.with('newsecretpassword'));
 
     this.users.save(user);
   }

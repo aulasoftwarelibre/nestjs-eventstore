@@ -35,12 +35,12 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get users' })
+  @ApiOperation({ summary: 'Create user' })
   @ApiOkResponse({ type: UserDto })
   @Post()
   async create(@Body() userDto: CreateUserDto): Promise<UserDto> {
     try {
-      return this.userService.create(userDto);
+      return await this.userService.create(userDto);
     } catch (e) {
       if (e instanceof IdAlreadyRegisteredError) {
         throw new ConflictException(e.message);
