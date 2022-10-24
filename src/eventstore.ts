@@ -26,7 +26,6 @@ import { KeyService } from './services';
 export class EventStore
   implements IEventPublisher<Event>, IMessageSource<Event>
 {
-  private category: string;
   private client: EventStoreDBClient;
   private readonly logger = new Logger(EventStore.name);
 
@@ -35,7 +34,6 @@ export class EventStore
     private readonly mapper: EventStoreMapper,
     private readonly keyService: KeyService,
   ) {
-    this.category = config.category;
     this.client = EventStoreDBClient.connectionString(config.connection);
   }
 
@@ -84,7 +82,7 @@ export class EventStore
     aggregate: Type<T>,
     id: string,
   ): Promise<T> | null {
-    const streamName = `${this.category}-${id}`;
+    const streamName = `${aggregate.name}-${id}`;
 
     try {
       const entity = <T>Reflect.construct(aggregate, []);
@@ -114,9 +112,11 @@ export class EventStore
   }
 
   async bridgeEventsTo<T extends Event>(subject: Subject<T>) {
-    const streamName = `$ce-${this.category}`;
-
     const onEvent = async (resolvedEvent: ResolvedEvent) => {
+      if (resolvedEvent.event?.type.startsWith('$')) {
+        return;
+      }
+
       subject.next(
         <T>await this.mapper.resolvedEventToDomainEvent(resolvedEvent),
       );
@@ -124,9 +124,8 @@ export class EventStore
 
     try {
       await this.client
-        .subscribeToStream(streamName, {
-          fromRevision: END,
-          resolveLinkTos: true,
+        .subscribeToAll({
+          fromPosition: END,
         })
         .on('data', onEvent);
     } catch (error) {
@@ -135,7 +134,7 @@ export class EventStore
   }
 
   private getStreamName<T extends Event>(event: T) {
-    return `${this.category}-${event.aggregateId}`;
+    return `${event.stream}-${event.aggregateId}`;
   }
 
   private getExpectedRevision<T extends Event>(

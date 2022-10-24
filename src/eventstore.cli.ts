@@ -10,7 +10,6 @@ import { ProjectionsService } from './services';
 
 @Console()
 export class EventStoreCli {
-  private readonly category: string;
   private readonly client: EventStoreDBClient;
   private readonly logger = new Logger(EventStoreCli.name);
   private readonly eventHandlers;
@@ -21,7 +20,6 @@ export class EventStoreCli {
     @Inject(EVENTSTORE_SETTINGS_TOKEN) config: Config,
   ) {
     this.client = EventStoreDBClient.connectionString(config.connection);
-    this.category = config.category;
     this.eventHandlers = projections.eventHandlers();
   }
 
@@ -30,16 +28,17 @@ export class EventStoreCli {
     description: 'Restore read model',
   })
   async restore(): Promise<void> {
-    const resolvedEvents = await this.client.readStream(
-      `$ce-${this.category}`,
-      {
-        direction: FORWARDS,
-        fromRevision: START,
-        resolveLinkTos: true,
-      },
-    );
+    const resolvedEvents = this.client.readAll({
+      direction: FORWARDS,
+      fromPosition: START,
+      resolveLinkTos: false,
+    });
 
     for await (const resolvedEvent of resolvedEvents) {
+      if (resolvedEvent.event?.type.startsWith('$')) {
+        continue;
+      }
+
       const event = await this.mapper.resolvedEventToDomainEvent(resolvedEvent);
 
       if (!event) continue;

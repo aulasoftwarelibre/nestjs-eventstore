@@ -3,6 +3,7 @@ import clone = require('clone');
 import * as uuid from 'uuid';
 
 export type Metadata = {
+  _stream?: string;
   _aggregate_id: string;
   _aggregate_version: number;
   _aggregate_encrypted: boolean;
@@ -34,6 +35,10 @@ export class Event<P = unknown> implements IEvent {
 
   get metadata(): Readonly<Metadata> {
     return this._metadata;
+  }
+
+  get stream(): string {
+    return this._metadata._stream;
   }
 
   get aggregateId(): string {
@@ -88,6 +93,16 @@ export class Event<P = unknown> implements IEvent {
     const event = clone(this);
     event._payload = {
       ...payload,
+    };
+
+    return event;
+  }
+
+  withStream(stream: string): Event<P> {
+    const event = clone(this);
+    event._metadata = {
+      ...this._metadata,
+      _stream: stream,
     };
 
     return event;

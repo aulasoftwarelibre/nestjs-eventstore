@@ -12,13 +12,14 @@ import { v4 as uuid } from 'uuid';
 import { KeyDocument, KeyDto, KEYS } from '../crypto';
 import { Event } from '../domain';
 import { KeyNotFoundError } from '../errors';
+import { EVENTSTORE_KEYSTORE_CONNECTION } from '../eventstore.constants';
 
 @Injectable()
 export class KeyService {
   private readonly logger = new Logger(KeyService.name);
 
   constructor(
-    @InjectModel(KEYS)
+    @InjectModel(KEYS, EVENTSTORE_KEYSTORE_CONNECTION)
     private readonly keys: Model<KeyDocument>,
     private readonly aesService: AesService,
   ) {}

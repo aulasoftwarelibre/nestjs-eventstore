@@ -22,8 +22,7 @@ export class EventStoreMapper {
   ): Promise<Event> | null {
     if (
       resolvedEvent.event === undefined ||
-      resolvedEvent.event.type.startsWith('$') ||
-      !resolvedEvent.event.streamId.startsWith(this.config.category)
+      resolvedEvent.event.type.startsWith('$')
     ) {
       return null;
     }
