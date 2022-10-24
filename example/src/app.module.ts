@@ -25,19 +25,11 @@ import { UserModule } from './user';
     CqrsModule,
     ConsoleModule,
     EventStoreModule.forRoot({
-      category: 'example',
       connection: process.env.EVENTSTORE_URI,
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI, {
-      useCreateIndex: true,
-      useFindAndModify: false,
-      useNewUrlParser: true,
-    }),
+    MongooseModule.forRoot(process.env.MONGO_URI, {}),
     MongooseModule.forRoot(process.env.KEYSTORE_URI, {
       connectionName: EVENTSTORE_KEYSTORE_CONNECTION,
-      useCreateIndex: true,
-      useFindAndModify: false,
-      useNewUrlParser: true,
     }),
     AccountModule,
     UserModule,

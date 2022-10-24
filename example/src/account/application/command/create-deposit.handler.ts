@@ -21,6 +21,7 @@ export class CreateDepositHandler
     const date = command.date;
 
     const account = await this.accounts.find(accountId);
+    console.debug('account', account);
 
     if (false === account instanceof Account) {
       throw new Error(`Account ${command.accountId} not found`);

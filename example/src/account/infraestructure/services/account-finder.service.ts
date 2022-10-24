@@ -12,10 +12,10 @@ export class AccountFinder implements IAccountFinder {
     @InjectModel(ACCOUNTS_PROJECTION) private accounts: Model<AccountDocument>,
   ) {}
   async findAll(): Promise<AccountDto[]> {
-    return this.accounts.find().exec();
+    return this.accounts.find().lean();
   }
 
   async find(id: AccountId): Promise<AccountDto> {
-    return this.accounts.findById(id.value).exec();
+    return this.accounts.findById(id.value).lean();
   }
 }
