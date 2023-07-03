@@ -1,15 +1,16 @@
-import { AesService } from '@akanass/nestjsx-crypto';
-import {
-  decryptWithAesKey,
-  encryptWithAesKey,
-} from '@akanass/nestjsx-crypto/operators/aes';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { firstValueFrom } from 'rxjs';
 import { v4 as uuid } from 'uuid';
 
-import { KeyDocument, KeyDto, KEYS } from '../crypto';
+import {
+  createAesKey,
+  decryptWithAesKey,
+  encryptWithAesKey,
+  KeyDocument,
+  KeyDto,
+  KEYS,
+} from '../crypto';
 import { Event } from '../domain';
 import { KeyNotFoundError } from '../errors';
 import { EVENTSTORE_KEYSTORE_CONNECTION } from '../eventstore.constants';
@@ -21,7 +22,6 @@ export class KeyService {
   constructor(
     @InjectModel(KEYS, EVENTSTORE_KEYSTORE_CONNECTION)
     private readonly keys: Model<KeyDocument>,
-    private readonly aesService: AesService,
   ) {}
 
   async create(id: string): Promise<KeyDto> {
@@ -56,11 +56,8 @@ export class KeyService {
 
     const data = JSON.stringify(event.payload);
 
-    const source$ = this.aesService
-      .createKey(key.secret, key.salt)
-      .pipe(encryptWithAesKey(Buffer.from(data, 'utf16le')));
-
-    const buffer = await firstValueFrom(source$);
+    const aesKey = await createAesKey(key.secret, key.salt);
+    const buffer = encryptWithAesKey(Buffer.from(data, 'utf16le'), aesKey);
 
     return event.withEncryptedPayload(buffer.toString('base64'));
   }
@@ -72,11 +69,11 @@ export class KeyService {
       throw KeyNotFoundError.withId(id);
     }
 
-    const source$ = await this.aesService
-      .createKey(key.secret, key.salt)
-      .pipe(decryptWithAesKey(Buffer.from(encryptedPayload, 'base64')));
-
-    const buffer = await firstValueFrom(source$);
+    const aesKey = await createAesKey(key.secret, key.salt);
+    const buffer = decryptWithAesKey(
+      Buffer.from(encryptedPayload, 'base64'),
+      aesKey,
+    );
     const payload = JSON.parse(buffer.toString('utf16le'));
 
     return payload;

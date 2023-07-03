@@ -1,11 +1,11 @@
-import { CryptoModule } from '@akanass/nestjsx-crypto';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
-import { v4 as uuid } from 'uuid';
 import { Model } from 'mongoose';
+import { v4 as uuid } from 'uuid';
 
-import { KeyDto, KeyDocument, KEYS } from '../crypto';
+import { KEYS, KeyDocument, KeyDto } from '../crypto';
 import { Event } from '../domain';
+import { EVENTSTORE_KEYSTORE_CONNECTION } from '../eventstore.constants';
 import { KeyService } from './key.service';
 
 describe('KeyService', () => {
@@ -22,11 +22,10 @@ describe('KeyService', () => {
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [CryptoModule],
       providers: [
         KeyService,
         {
-          provide: getModelToken(KEYS),
+          provide: getModelToken(KEYS, EVENTSTORE_KEYSTORE_CONNECTION),
           useValue: {
             findById: jest.fn(),
             findByIdAndRemove: jest.fn(),
@@ -36,7 +35,9 @@ describe('KeyService', () => {
     }).compile();
 
     keyService = moduleRef.get<KeyService>(KeyService);
-    keys = moduleRef.get<Model<KeyDocument>>(getModelToken(KEYS));
+    keys = moduleRef.get<Model<KeyDocument>>(
+      getModelToken(KEYS, EVENTSTORE_KEYSTORE_CONNECTION),
+    );
   });
 
   describe('encrypt', () => {

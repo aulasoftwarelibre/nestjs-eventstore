@@ -1,4 +1,3 @@
-import { CryptoModule } from '@akanass/nestjsx-crypto';
 import {
   DynamicModule,
   Global,
@@ -26,7 +25,6 @@ import { KeyService, ProjectionsService, TransformerService } from './services';
 @Global()
 @Module({
   imports: [
-    CryptoModule,
     CqrsModule,
     MongooseModule.forFeature(
       [
