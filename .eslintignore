@@ -1,2 +1,4 @@
 /dist/
 src/**/*.spec.ts
+example/**
+.eslintrc.js
