@@ -1,4 +1,4 @@
-import { EncryptedAggregateRoot } from '../../../nestjs-eventstore';
+import { EncryptedAggregateRoot } from '@aulasoftwarelibre/nestjs-eventstore';
 import { UserWasCreated } from '../event';
 import { PasswordWasUpdated } from '../event/password-was-updated.event';
 import { UserWasDeleted } from '../event/user-was-deleted.event';

@@ -16,11 +16,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { catchError } from '../../../utils';
 import {
   IdAlreadyRegisteredError,
   IdNotFoundError,
-} from '../../../nestjs-eventstore';
+} from '@aulasoftwarelibre/nestjs-eventstore';
+import { catchError } from '../../../utils';
 import { CreateUserDto, UpdateUserDto, UserDto } from '../../dto';
 import { UserService } from '../services';
 

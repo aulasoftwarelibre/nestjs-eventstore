@@ -1,4 +1,4 @@
-import { Event } from '../../../nestjs-eventstore';
+import { Event } from '@aulasoftwarelibre/nestjs-eventstore';
 import { UpdateUserDto } from '../../dto';
 
 export type PasswordWasUpdatedProps = Pick<UpdateUserDto, 'password'>;

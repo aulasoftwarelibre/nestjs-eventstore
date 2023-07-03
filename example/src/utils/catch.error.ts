@@ -1,5 +1,5 @@
+import { DomainError } from '@aulasoftwarelibre/nestjs-eventstore';
 import { BadRequestException } from '@nestjs/common';
-import { DomainError } from '../nestjs-eventstore';
 
 export const catchError = (error: Error): Error => {
   if (error instanceof DomainError) {

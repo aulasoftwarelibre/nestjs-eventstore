@@ -2,7 +2,7 @@ import {
   AggregateRepository,
   IdAlreadyRegisteredError,
   InjectAggregateRepository,
-} from '../../../nestjs-eventstore';
+} from '@aulasoftwarelibre/nestjs-eventstore';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Account, AccountId } from '../../domain';
 import { Title } from '../../domain/model/title';

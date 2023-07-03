@@ -1,7 +1,7 @@
+import { Event, EventStoreModule } from '@aulasoftwarelibre/nestjs-eventstore';
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Event, EventStoreModule } from '../../nestjs-eventstore';
 import { commandHandlers, queryHandlers } from '../application';
 import {
   PasswordWasUpdated,
@@ -12,7 +12,7 @@ import {
 } from '../domain';
 import { CreateUserDto } from '../dto';
 import { UserController } from './controller';
-import { projectionHandlers, UserSchema, USERS_PROJECTION } from './read-model';
+import { USERS_PROJECTION, UserSchema, projectionHandlers } from './read-model';
 import { UserService } from './services';
 import { userProviders } from './user.providers';
 

@@ -1,4 +1,4 @@
-import { DomainError, ValueObject } from '../../../nestjs-eventstore';
+import { DomainError, ValueObject } from '@aulasoftwarelibre/nestjs-eventstore';
 
 interface Props {
   value: string;

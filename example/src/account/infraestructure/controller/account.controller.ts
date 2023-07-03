@@ -1,4 +1,8 @@
 import {
+  IdAlreadyRegisteredError,
+  IdNotFoundError,
+} from '@aulasoftwarelibre/nestjs-eventstore';
+import {
   Body,
   ConflictException,
   Controller,
@@ -8,10 +12,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import {
-  IdAlreadyRegisteredError,
-  IdNotFoundError,
-} from '../../../nestjs-eventstore';
 import { catchError } from '../../../utils';
 import { AccountDto, CreateAccountDto, CreateTransactionDto } from '../../dto';
 import { AccountService } from '../services';

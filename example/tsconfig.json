@@ -9,7 +9,11 @@
     "target": "es2019",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": ".",
-    "incremental": true
-  }
+    "incremental": true,
+    "paths": {
+      "@aulasoftwarelibre/nestjs-eventstore": ["./src/nestjs-eventstore/"],
+      "*": ["./src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
 }

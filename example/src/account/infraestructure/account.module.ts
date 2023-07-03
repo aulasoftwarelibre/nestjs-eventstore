@@ -1,4 +1,4 @@
-import { Event, EventStoreModule } from '../../nestjs-eventstore';
+import { Event, EventStoreModule } from '@aulasoftwarelibre/nestjs-eventstore';
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,13 +11,13 @@ import {
 } from '../domain';
 import { CreateAccountDto, CreateTransactionDto } from '../dto/request';
 import { accountProviders } from './account.providers';
-import { AccountService } from './services/account.service';
 import { AccountController } from './controller';
 import {
-  AccountSchema,
   ACCOUNTS_PROJECTION,
+  AccountSchema,
   projectionHandlers,
 } from './read-model';
+import { AccountService } from './services/account.service';
 
 @Module({
   controllers: [AccountController],

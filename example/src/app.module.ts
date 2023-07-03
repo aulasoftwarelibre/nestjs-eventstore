@@ -2,13 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConsoleModule } from 'nestjs-console';
 
-import { AccountModule } from './account';
 import {
-  EventStoreModule,
   EVENTSTORE_KEYSTORE_CONNECTION,
-} from './nestjs-eventstore';
+  EventStoreModule,
+} from '@aulasoftwarelibre/nestjs-eventstore';
+import { AccountModule } from './account';
 import { UserModule } from './user';
 
 @Module({
@@ -23,7 +22,6 @@ import { UserModule } from './user';
       isGlobal: true,
     }),
     CqrsModule,
-    ConsoleModule,
     EventStoreModule.forRoot({
       connection: process.env.EVENTSTORE_URI,
     }),

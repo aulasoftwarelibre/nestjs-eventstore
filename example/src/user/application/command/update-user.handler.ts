@@ -1,9 +1,9 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   AggregateRepository,
   IdNotFoundError,
   InjectAggregateRepository,
-} from '../../../nestjs-eventstore';
+} from '@aulasoftwarelibre/nestjs-eventstore';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Password, User, UserId } from '../../domain';
 import { UpdateUserCommand } from './update-user.query';
 

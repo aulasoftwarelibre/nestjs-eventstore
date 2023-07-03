@@ -1,10 +1,10 @@
+import { IdNotFoundError } from '@aulasoftwarelibre/nestjs-eventstore';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UserId } from '../../domain';
 import { UserDto } from '../../dto';
 import { IUserFinder, USER_FINDER } from '../services';
 import { GetUserQuery } from './get-user.query';
-import { IdNotFoundError } from '../../../nestjs-eventstore';
 
 @QueryHandler(GetUserQuery)
 export class GetUserHandler implements IQueryHandler<GetUserQuery> {

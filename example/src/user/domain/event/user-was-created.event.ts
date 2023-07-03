@@ -1,4 +1,4 @@
-import { Event } from '../../../nestjs-eventstore';
+import { Event } from '@aulasoftwarelibre/nestjs-eventstore';
 import { CreateUserDto } from '../../dto';
 
 export class UserWasCreated extends Event<CreateUserDto> {
