@@ -1,6 +1,5 @@
 import { DynamicModule, Module, Provider, Type } from '@nestjs/common';
 import { CqrsModule, EventPublisher } from '@nestjs/cqrs';
-import { ConsoleModule } from 'nestjs-console';
 
 import { AggregateRepository } from './aggregate.repository';
 import { AggregateRoot } from './domain';
@@ -25,11 +24,7 @@ export class EventStoreModule {
   ): DynamicModule {
     return {
       module: EventStoreModule,
-      imports: [
-        ConsoleModule,
-        CqrsModule,
-        EventStoreCoreModule.forRootAsync(options),
-      ],
+      imports: [CqrsModule, EventStoreCoreModule.forRootAsync(options)],
     };
   }
 

@@ -12,7 +12,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { KEYS, KeySchema } from './crypto';
 import { Event } from './domain';
 import { EventStore } from './eventstore';
-import { EventStoreCli } from './eventstore.cli';
+import { EventStoreRestoreCommand } from './eventstore.cli';
 import { Config } from './eventstore.config';
 import {
   EVENTSTORE_KEYSTORE_CONNECTION,
@@ -39,7 +39,7 @@ import { KeyService, ProjectionsService, TransformerService } from './services';
   providers: [
     EventStore,
     EventStoreMapper,
-    EventStoreCli,
+    EventStoreRestoreCommand,
     ExplorerService,
     KeyService,
     ProjectionsService,

@@ -1,6 +1,6 @@
 import { EventStoreDBClient, FORWARDS, START } from '@eventstore/db-client';
 import { Inject, Logger } from '@nestjs/common';
-import { Command, Console } from 'nestjs-console';
+import { Command, CommandRunner } from 'nest-commander';
 
 import { Event } from './domain';
 import { Config } from './eventstore.config';
@@ -8,10 +8,13 @@ import { EVENTSTORE_SETTINGS_TOKEN } from './eventstore.constants';
 import { EventStoreMapper } from './eventstore.mapper';
 import { ProjectionsService } from './services';
 
-@Console()
-export class EventStoreCli {
+@Command({
+  name: 'eventstore:readmodel:restore',
+  description: 'Restore read model',
+})
+export class EventStoreRestoreCommand extends CommandRunner {
   private readonly client: EventStoreDBClient;
-  private readonly logger = new Logger(EventStoreCli.name);
+  private readonly logger = new Logger(EventStoreRestoreCommand.name);
   private readonly eventHandlers;
 
   constructor(
@@ -19,15 +22,15 @@ export class EventStoreCli {
     projections: ProjectionsService,
     @Inject(EVENTSTORE_SETTINGS_TOKEN) config: Config,
   ) {
+    super();
     this.client = EventStoreDBClient.connectionString(config.connection);
     this.eventHandlers = projections.eventHandlers();
   }
 
-  @Command({
-    command: 'eventstore:readmodel:restore',
-    description: 'Restore read model',
-  })
-  async restore(): Promise<void> {
+  async run(
+    passedParams: string[],
+    options?: Record<string, any>,
+  ): Promise<void> {
     const resolvedEvents = this.client.readAll({
       direction: FORWARDS,
       fromPosition: START,
