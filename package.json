@@ -1,7 +1,7 @@
 {
   "name": "@aulasoftwarelibre/nestjs-eventstore",
   "description": "NestJS module for eventsourcing development with eventstore database",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "license": "EUPL-1.2",
   "author": {
     "name": "Sergio Gómez",
