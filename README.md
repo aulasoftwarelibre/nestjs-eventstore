@@ -61,6 +61,20 @@ You require to have a nestjs project with this modules already installed and loa
 
 Distributed under the EUPL-1.2 License. See `LICENSE` for more information.
 
+## Running the example
+
+To run the example you will need docker. Just run:
+
+```shell
+docker compose up -d
+```
+
+And a few minutes later you will access to the example application in the next urls:
+
+- [Swagger API](http://localhost:3000/api/)
+- [EventStore Database (Write model)](http://localhost:2113)
+- [Mongo Database (Read model)](http://admin:pass@localhost:8081/)
+
 ## Acknowledgements
 
 This module was created following next articles:

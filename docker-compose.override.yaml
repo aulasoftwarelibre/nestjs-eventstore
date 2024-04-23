@@ -4,8 +4,8 @@ services:
   app:
     volumes:
       - type: bind
-        source: ./example
-        target: /app
+        source: ./example/src
+        target: /app/src
       - type: bind
         source: ./src
         target: /app/src/nestjs-eventstore
