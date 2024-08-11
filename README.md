@@ -47,6 +47,10 @@ You require to have a nestjs project with this modules already installed and loa
 
         npm install @aulasoftwarelibre/nestjs-eventstore
 
+- pnpm
+
+        npm add @aulasoftwarelibre/nestjs-eventstore
+
 - yarn
 
         yarn add @aulasoftwarelibre/nestjs-eventstore
@@ -63,13 +67,26 @@ Distributed under the EUPL-1.2 License. See `LICENSE` for more information.
 
 ## Running the example
 
-To run the example you will need docker. Just run:
+To run the example you will build the library first:
 
 ```shell
+pnpm run build
+```
+
+Then go to the example folder an run the containers:
+
+```shell
+cd examples/banking
 docker compose up -d
 ```
 
-And a few minutes later you will access to the example application in the next urls:
+And finally run the project:
+
+```shell
+pnpm run start:dev
+```
+
+You will access to the example application in the next urls:
 
 - [Swagger API](http://localhost:3000/api/)
 - [EventStore Database (Write model)](http://localhost:2113)
