@@ -1,0 +1,68 @@
+{
+  "name": "@aulasoftwarelibre/nestjs-eventstore",
+  "description": "NestJS module for eventsourcing development with eventstore database",
+  "version": "0.8.0",
+  "license": "EUPL-1.2",
+  "author": "Sergio Gómez Bachiller <decano@gmail.com>",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist",
+    "dev": "tsup --watch",
+    "lint": "eslint \"./**/*.ts*\"",
+    "type-check": "tsc --noEmit",
+    "prettier-check": "prettier --check \"./**/*.ts*\"",
+    "test": "vitest"
+  },
+  "keywords": [
+    "nestjs",
+    "eventstore",
+    "eventsourcing"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aulasoftwarelibre/nestjs-eventstore"
+  },
+  "bugs": "https://github.com/aulasoftwarelibre/nestjs-eventstore/issues",
+  "dependencies": {
+    "@eventstore/db-client": "^6.2.1",
+    "lodash.clonedeep": "^4.5.0",
+    "nest-commander": "^3.11.0",
+    "shallow-equal-object": "^1.1.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^10.0.4",
+    "@nestjs/config": "^3.0.0",
+    "@nestjs/core": "^10.0.4",
+    "@nestjs/cqrs": "^10.0.1",
+    "@nestjs/mongoose": "^10.0.0",
+    "@nestjs/testing": "^10.0.4",
+    "@swc/core": "^1.7.10",
+    "@types/lodash.clonedeep": "^4.5.9",
+    "@types/node": "^20.3.3",
+    "@types/uuid": "^9.0.2",
+    "mongoose": "^7.3.1",
+    "reflect-metadata": "0.1.13",
+    "rxjs": "^7.8.1",
+    "tsup": "^8.2.4",
+    "typescript": "^5.1.6"
+  },
+  "peerDependencies": {
+    "@eventstore/db-client": "^5.0.0 || ^6.0.0",
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.0.0",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/cqrs": "^10.0.0",
+    "@nestjs/mongoose": "^10.0.0",
+    "mongoose": "^7.3.0",
+    "nest-commander": "^3.11.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.0.0"
+  }
+}

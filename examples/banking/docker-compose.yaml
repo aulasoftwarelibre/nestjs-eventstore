@@ -1,0 +1,44 @@
+services:
+  eventstore.db:
+    platform: linux/amd64
+    image: eventstore/eventstore:${EVENSTORE_IMAGE:-lts}
+    environment:
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+      - DOTNET_EnableWriteXorExecute=0
+    ports:
+      - '1113:1113'
+      - '2113:2113'
+    volumes:
+      - type: volume
+        source: eventstore-volume-data
+        target: /var/lib/eventstore
+      - type: volume
+        source: eventstore-volume-logs
+        target: /var/log/eventstore
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - type: volume
+        source: mongo-volume-data
+        target: /data/db
+
+  mongo-express:
+    depends_on:
+      - mongo
+    image: mongo-express:latest
+    ports:
+      - 8081:8081
+
+volumes:
+  eventstore-volume-data:
+  eventstore-volume-logs:
+  mongo-volume-data:
+  mongoclient-volume-data:
